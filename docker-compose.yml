@@ -1,0 +1,30 @@
+version: '3'
+# List of services(containers)
+services:
+    nginx:
+        # use the latest stable nginx
+        image: nginx:latest
+        # route port
+        ports:
+            - "80:80"
+            - "443:443"
+        # mount(link) directories into container folder
+        volumes:
+            - ./hosts:/etc/nginx/conf.d
+            - ./www:/var/www
+            - ./logs:/var/log/nginx
+        depends_on:
+            - php
+    php:
+        image: php:7.2-fpm
+        volumes:
+            - ./www:/var/www
+    mysql:
+        image: mysql:8
+        ports:
+            - "3306:3306"
+        volumes:
+            - ./mysql:/var/lib/mysql
+        # mysql admin password
+        environment:
+            MYSQL_ROOT_PASSWORD: secret_pass
